@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bayesian Networks — Advanced Data Mining | Kanazawa University</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #fafbfc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f4f6f8;
+            --bg-dark: #1a1f36;
+            --bg-dark-secondary: #252d4a;
+            --accent-primary: #2563eb;
+            --accent-secondary: #7c3aed;
+            --accent-success: #059669;
+            --accent-warning: #d97706;
+            --accent-danger: #dc2626;
+            --text-primary: #1a1f36;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            --text-light: #a0aec0;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; font-size: 16px; }
+        
+        .site-header { background: var(--bg-dark); color: white; padding: 1rem 2rem; position: sticky; top: 0; z-index: 1000; box-shadow: var(--shadow-lg); }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .university-brand { display: flex; align-items: center; gap: 1rem; }
+        .university-logo { width: 45px; height: 45px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; }
+        .university-info h1 { font-size: 1.1rem; font-weight: 600; }
+        .university-info span { font-size: 0.8rem; color: var(--text-light); }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--text-light); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: white; }
+        @media (max-width: 768px) { .nav-links { display: none; } .header-content { justify-content: center; } }
+        
+        .hero { background: linear-gradient(135deg, var(--bg-dark), var(--bg-dark-secondary)); color: white; padding: 5rem 2rem; text-align: center; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); opacity: 0.5; }
+        .hero-content { position: relative; max-width: 900px; margin: 0 auto; }
+        .chapter-badge { display: inline-block; padding: 0.5rem 1.25rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; font-size: 0.85rem; font-weight: 500; margin-bottom: 1.5rem; }
+        .hero h2 { font-family: 'Crimson Pro', serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; margin-bottom: 1.25rem; }
+        .hero-subtitle { font-size: 1.2rem; color: var(--text-light); max-width: 650px; margin: 0 auto 2rem; line-height: 1.8; }
+        .hero-meta { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); }
+        .meta-item { text-align: center; }
+        .meta-label { font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.25rem; }
+        .meta-value { font-weight: 600; font-size: 1rem; }
+        
+        .author-section { background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); }
+        .author-card { max-width: 1200px; margin: 0 auto; padding: 2.5rem 2rem; display: flex; align-items: center; gap: 2rem; }
+        .author-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; flex-shrink: 0; }
+        .author-info h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .author-info p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .author-affiliation { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-tertiary); }
+        .affiliation-badge { padding: 0.25rem 0.75rem; background: var(--bg-tertiary); border-radius: 50px; font-weight: 500; }
+        @media (max-width: 600px) { .author-card { flex-direction: column; text-align: center; } }
+        
+        .toc-section { background: var(--bg-tertiary); padding: 3rem 2rem; }
+        .toc-container { max-width: 1200px; margin: 0 auto; }
+        .toc-title { font-family: 'Crimson Pro', serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; }
+        .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+        .toc-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; background: var(--bg-secondary); border-radius: var(--radius-md); text-decoration: none; color: var(--text-primary); border: 1px solid var(--border-color); transition: all 0.2s; }
+        .toc-item:hover { border-color: var(--accent-primary); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .toc-number { width: 36px; height: 36px; background: var(--bg-tertiary); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 600; color: var(--accent-primary); }
+        .toc-text { font-weight: 500; font-size: 0.95rem; }
+        
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; }
+        .content-section { margin-bottom: 5rem; }
+        .section-header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border-color); }
+        .section-number { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-primary); font-weight: 600; margin-bottom: 0.5rem; }
+        .section-title { font-family: 'Crimson Pro', serif; font-size: 2rem; font-weight: 700; }
+        .content-body { font-size: 1.05rem; color: var(--text-secondary); }
+        .content-body p { margin-bottom: 1.5rem; }
+        .content-body strong { color: var(--text-primary); font-weight: 600; }
+        
+        .definition-box { background: linear-gradient(135deg, #eff6ff, #f5f3ff); border-left: 4px solid var(--accent-primary); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; padding: 2rem; margin: 2rem 0; }
+        .definition-box h4 { font-family: 'Crimson Pro', serif; font-size: 1.25rem; color: var(--accent-primary); margin-bottom: 1rem; }
+        .definition-box p { color: var(--text-secondary); margin-bottom: 0; }
+        
+        .insight-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2rem; margin: 2rem 0; box-shadow: var(--shadow-sm); }
+        .insight-box.highlight { background: linear-gradient(135deg, #fefce8, #fef3c7); border-color: var(--accent-warning); }
+        .insight-label { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; background: var(--accent-primary); color: white; border-radius: 50px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem; }
+        .insight-box.highlight .insight-label { background: var(--accent-warning); }
+        .insight-content { font-size: 1.1rem; color: var(--text-primary); font-weight: 500; }
+        
+        .formula-container { background: var(--bg-dark); border-radius: var(--radius-lg); padding: 2.5rem; margin: 2rem 0; text-align: center; position: relative; overflow: hidden; }
+        .formula-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary)); }
+        .formula-label { color: var(--text-light); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; }
+        .formula-display { font-family: 'JetBrains Mono', monospace; font-size: clamp(1rem, 3vw, 1.5rem); color: #60a5fa; padding: 1.5rem 2rem; background: rgba(255,255,255,0.05); border-radius: var(--radius-md); display: inline-block; border: 1px solid rgba(255,255,255,0.1); }
+        .formula-explanation { color: var(--text-light); font-size: 0.95rem; margin-top: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+        
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .feature-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem; transition: all 0.3s; }
+        .feature-card:hover { border-color: var(--accent-primary); box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+        .feature-icon { width: 50px; height: 50px; background: var(--bg-tertiary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.25rem; }
+        .feature-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
+        .feature-card p { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
+        
+        .visualization-section { background: var(--bg-tertiary); border-radius: var(--radius-xl); padding: 2.5rem; margin: 3rem 0; border: 1px solid var(--border-color); }
+        .viz-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .viz-title { font-family: 'Crimson Pro', serif; font-size: 1.5rem; font-weight: 600; }
+        .viz-subtitle { color: var(--text-tertiary); font-size: 0.9rem; margin-top: 0.25rem; }
+        .viz-badge { padding: 0.5rem 1rem; background: var(--accent-success); color: white; border-radius: 50px; font-size: 0.8rem; font-weight: 600; }
+        .canvas-container { background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid var(--border-color); }
+        #bayesianCanvas { width: 100%; height: 400px; display: block; }
+        .control-panel { display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-bottom: 1.5rem; }
+        .control-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--text-primary); cursor: pointer; transition: all 0.2s; }
+        .control-btn:hover { background: var(--bg-dark); color: white; border-color: var(--bg-dark); }
+        .control-btn.active { background: var(--accent-primary); color: white; border-color: var(--accent-primary); }
+        .control-btn .icon { font-size: 1.1rem; }
+        .prob-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+        .prob-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; transition: all 0.2s; }
+        .prob-card:hover { border-color: var(--accent-primary); }
+        .prob-label { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 0.5rem; }
+        .prob-value { font-size: 1.75rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 0.75rem; }
+        .prob-bar { height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden; }
+        .prob-fill { height: 100%; background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary)); border-radius: 3px; transition: width 0.5s; }
+        
+        .demo-container { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2.5rem; margin: 2rem 0; }
+        .demo-header { margin-bottom: 2rem; }
+        .demo-title { font-family: 'Crimson Pro', serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .demo-description { color: var(--text-secondary); font-size: 0.95rem; }
+        .demo-layout { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; }
+        @media (max-width: 800px) { .demo-layout { grid-template-columns: 1fr; } }
+        .demo-controls { display: flex; flex-direction: column; gap: 1rem; }
+        .toggle-card { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem; background: var(--bg-tertiary); border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; }
+        .toggle-card:hover { border-color: var(--text-tertiary); }
+        .toggle-card.active { background: linear-gradient(135deg, #eff6ff, #f5f3ff); border-color: var(--accent-primary); }
+        .toggle-info { display: flex; align-items: center; gap: 0.75rem; }
+        .toggle-icon { font-size: 1.5rem; }
+        .toggle-label { font-weight: 600; font-size: 0.95rem; }
+        .toggle-switch { width: 48px; height: 26px; background: var(--border-color); border-radius: 13px; position: relative; transition: all 0.3s; }
+        .toggle-card.active .toggle-switch { background: var(--accent-primary); }
+        .toggle-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: all 0.3s; box-shadow: var(--shadow-sm); }
+        .toggle-card.active .toggle-switch::after { left: 25px; }
+        .demo-results { background: var(--bg-tertiary); border-radius: var(--radius-lg); padding: 2rem; }
+        .result-title { font-family: 'Crimson Pro', serif; font-size: 1.25rem; font-weight: 600; color: var(--accent-primary); margin-bottom: 1.5rem; }
+        .meter-group { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; }
+        .meter-item { display: flex; flex-direction: column; gap: 0.5rem; }
+        .meter-header { display: flex; justify-content: space-between; align-items: center; }
+        .meter-name { font-weight: 600; font-size: 0.95rem; }
+        .meter-value { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--accent-primary); }
+        .meter-bar { height: 10px; background: var(--bg-secondary); border-radius: 5px; overflow: hidden; }
+        .meter-fill { height: 100%; border-radius: 5px; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .meter-fill.burglary { background: linear-gradient(90deg, var(--accent-danger), #f87171); }
+        .meter-fill.earthquake { background: linear-gradient(90deg, var(--accent-secondary), #a78bfa); }
+        .result-explanation { padding: 1.25rem; background: var(--bg-secondary); border-radius: var(--radius-md); border-left: 4px solid var(--accent-primary); }
+        .result-explanation p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; margin: 0; }
+        
+        .steps-container { margin: 2rem 0; }
+        .step-item { display: flex; gap: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .step-item:not(:last-child)::after { content: ''; position: absolute; left: 20px; top: 50px; bottom: -1.5rem; width: 2px; background: var(--border-color); }
+        .step-number { width: 42px; height: 42px; background: var(--accent-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; flex-shrink: 0; }
+        .step-content { flex: 1; padding-top: 0.5rem; }
+        .step-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .step-description { color: var(--text-secondary); font-size: 0.95rem; }
+        
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin: 2rem 0; }
+        .app-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; transition: all 0.3s; }
+        .app-card:hover { border-color: var(--accent-secondary); box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+        .app-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .app-name { font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem; }
+        .app-desc { font-size: 0.85rem; color: var(--text-tertiary); }
+        
+        .takeaway-list { display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0; }
+        .takeaway-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem 1.5rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); transition: all 0.2s; }
+        .takeaway-item:hover { border-color: var(--accent-success); box-shadow: var(--shadow-md); }
+        .takeaway-check { width: 28px; height: 28px; background: var(--accent-success); color: white; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.9rem; }
+        .takeaway-text { font-size: 1rem; color: var(--text-secondary); }
+        .takeaway-text strong { color: var(--text-primary); }
+        
+        .references-section { background: var(--bg-tertiary); border-radius: var(--radius-lg); padding: 2rem; margin-top: 3rem; }
+        .references-title { font-family: 'Crimson Pro', serif; font-size: 1.25rem; font-weight: 600; margin-bottom: 1.25rem; }
+        .reference-list { list-style: none; }
+        .reference-item { padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; color: var(--text-secondary); }
+        .reference-item:last-child { border-bottom: none; }
+        .reference-item strong { color: var(--text-primary); }
+        
+        .site-footer { background: var(--bg-dark); color: white; padding: 3rem 2rem; margin-top: 4rem; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+        .footer-section h4 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
+        .footer-section p { color: var(--text-light); font-size: 0.9rem; line-height: 1.7; }
+        .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: var(--text-light); font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <div class="university-brand">
+                <div class="university-logo">金大</div>
+                <div class="university-info">
+                    <h1>Kanazawa University</h1>
+                    <span>Graduate School of Natural Science and Technology</span>
+                </div>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#introduction">Introduction</a></li>
+                    <li><a href="#visualization">Visualization</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
+                    <li><a href="#applications">Applications</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="chapter-badge">Chapter 6.7 — Probabilistic Graphical Models</div>
+            <h2>Bayesian Networks</h2>
+            <p class="hero-subtitle">A comprehensive exploration of probabilistic graphical models that represent conditional dependencies through directed acyclic graphs, enabling efficient reasoning under uncertainty.</p>
+            <div class="hero-meta">
+                <div class="meta-item">
+                    <div class="meta-label">Course</div>
+                    <div class="meta-value">Advanced Data Mining</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Instructor</div>
+                    <div class="meta-value">Professor Nambo</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Institution</div>
+                    <div class="meta-value">Kanazawa University</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="author-section">
+        <div class="author-card">
+            <div class="author-avatar">👨‍🎓</div>
+            <div class="author-info">
+                <h3>Maju Sumanto</h3>
+                <p>This interactive educational material was created to fulfill the requirements of the <strong>Advanced Data Mining</strong> course at Kanazawa University, under the supervision of <strong>Professor Nambo</strong>. The visualizations are designed to help students understand complex probabilistic concepts through hands-on exploration.</p>
+                <div class="author-affiliation">
+                    <span class="affiliation-badge">Graduate Student</span>
+                    <span>Kanazawa University • January 2026</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="toc-section">
+        <div class="toc-container">
+            <h3 class="toc-title">Table of Contents</h3>
+            <div class="toc-grid">
+                <a href="#introduction" class="toc-item"><div class="toc-number">01</div><span class="toc-text">Introduction to Bayesian Networks</span></a>
+                <a href="#components" class="toc-item"><div class="toc-number">02</div><span class="toc-text">Core Components & Structure</span></a>
+                <a href="#visualization" class="toc-item"><div class="toc-number">03</div><span class="toc-text">Interactive Network Visualization</span></a>
+                <a href="#inference" class="toc-item"><div class="toc-number">04</div><span class="toc-text">Probabilistic Inference</span></a>
+                <a href="#explaining-away" class="toc-item"><div class="toc-number">05</div><span class="toc-text">The "Explaining Away" Phenomenon</span></a>
+                <a href="#learning" class="toc-item"><div class="toc-number">06</div><span class="toc-text">Learning Bayesian Networks</span></a>
+                <a href="#applications" class="toc-item"><div class="toc-number">07</div><span class="toc-text">Real-World Applications</span></a>
+                <a href="#takeaways" class="toc-item"><div class="toc-number">08</div><span class="toc-text">Key Takeaways</span></a>
+            </div>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <section id="introduction" class="content-section">
+            <div class="section-header">
+                <div class="section-number">Section 01</div>
+                <h2 class="section-title">Introduction to Bayesian Networks</h2>
+            </div>
+            <div class="content-body">
+                <p>A <strong>Bayesian Network</strong> (also known as a Bayes net, belief network, or probabilistic directed acyclic graphical model) is a powerful probabilistic model that represents a set of random variables and their conditional dependencies using a <strong>Directed Acyclic Graph (DAG)</strong>. This elegant mathematical framework provides a structured approach to reasoning under uncertainty, combining the rigor of probability theory with the intuitive clarity of graph-based representations.</p>
+                
+                <div class="definition-box">
+                    <h4>📚 Formal Definition</h4>
+                    <p>A Bayesian Network is a pair <strong>(G, P)</strong> where G is a directed acyclic graph whose nodes represent random variables, and P is a set of conditional probability distributions. Each node Xᵢ has an associated conditional probability distribution P(Xᵢ | Parents(Xᵢ)) that quantifies the effect of the parents on the node.</p>
+                </div>
+                
+                <p>The power of Bayesian Networks lies in their ability to compactly represent complex probability distributions. In a world where directly specifying a joint probability distribution over n binary variables would require 2ⁿ - 1 parameters (an exponentially growing number), Bayesian Networks offer a principled way to decompose this massive table into manageable, local conditional probability tables.</p>
+                
+                <div class="insight-box highlight">
+                    <div class="insight-label">💡 Key Insight</div>
+                    <div class="insight-content">Instead of defining a full joint distribution directly (which grows exponentially with the number of variables), a Bayesian Network breaks it down into a product of local conditional distributions, exploiting conditional independence relationships in the data.</div>
+                </div>
+                
+                <p>This decomposition is made possible by the <strong>chain rule of Bayesian Networks</strong>, which states that the joint probability distribution over all variables can be written as a product of conditional probabilities:</p>
+                
+                <div class="formula-container">
+                    <div class="formula-label">The Chain Rule of Bayesian Networks</div>
+                    <div class="formula-display">P(X₁, X₂, ..., Xₙ) = ∏ᵢ P(Xᵢ | Parents(Xᵢ))</div>
+                    <p class="formula-explanation">This factorization allows us to represent complex distributions efficiently by only storing local conditional probability tables for each variable given its immediate parents in the graph.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="components" class="content-section">
+            <div class="section-header">
+                <div class="section-number">Section 02</div>
+                <h2 class="section-title">Core Components & Structure</h2>
+            </div>
+            <div class="content-body">
+                <p>Understanding the fundamental building blocks of Bayesian Networks is essential for effectively modeling real-world problems. Each component plays a crucial role in encoding probabilistic relationships and enabling efficient inference.</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔗</div>
+                        <h4>Directed Acyclic Graph (DAG)</h4>
+                        <p>The backbone of every Bayesian Network. Nodes represent random variables, while directed edges (arrows) encode direct dependencies between variables. The "acyclic" constraint ensures no circular reasoning—causes always flow in one direction, preventing logical contradictions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h4>Conditional Probability Tables (CPTs)</h4>
+                        <p>Each node stores a CPT that specifies its probability distribution given all possible combinations of its parent values. For a node with k binary parents, the CPT contains 2ᵏ probability values, each representing P(Node | parent configuration).</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🧩</div>
+                        <h4>Conditional Independence</h4>
+                        <p>The graph structure explicitly encodes which variables are conditionally independent given others. This property is formalized through concepts like d-separation, which determines independence relationships directly from the graph topology.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h4>Factorization Property</h4>
+                        <p>The joint distribution factorizes into a product of local conditional distributions. This enables massive computational savings—instead of storing exponentially many parameters, we only need to store local CPTs, which scale polynomially in many practical cases.</p>
+                    </div>
+                </div>
+                
+                <div class="insight-box">
+                    <div class="insight-label">📐 Mathematical Foundation</div>
+                    <div class="insight-content">The factorization property emerges from the <strong>local Markov property</strong>: each node is conditionally independent of its non-descendants given its parents. This property, combined with the DAG structure, uniquely determines the joint distribution and all conditional independence relationships.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="visualization" class="content-section">
+            <div class="section-header">
+                <div class="section-number">Section 03</div>
+                <h2 class="section-title">Interactive Network Visualization</h2>
+            </div>
+            <div class="content-body">
+                <p>The following interactive visualization demonstrates the classic <strong>Alarm Network</strong>—a canonical example in Bayesian Network literature. This network models a home security scenario where two potential causes (Burglary and Earthquake) can trigger an Alarm, which in turn may prompt calls from neighbors (John and Mary).</p>
+                
+                <div class="visualization-section">
+                    <div class="viz-header">
+                        <div>
+                            <div class="viz-title">The Alarm Network</div>
+                            <div class="viz-subtitle">Click the buttons below to observe different variables and see how probabilities update</div>
+                        </div>
+                        <div class="viz-badge">Interactive Demo</div>
+                    </div>
+                    
+                    <div class="canvas-container">
+                        <canvas id="bayesianCanvas"></canvas>
+                    </div>
+                    
+                    <div class="control-panel">
+                        <button class="control-btn" id="btnReset"><span class="icon">↺</span> Reset Network</button>
+                        <button class="control-btn" id="btnBurglary"><span class="icon">🔓</span> Observe Burglary</button>
+                        <button class="control-btn" id="btnEarthquake"><span class="icon">🌋</span> Observe Earthquake</button>
+                        <button class="control-btn" id="btnAlarm"><span class="icon">🔔</span> Observe Alarm</button>
+                    </div>
+                    
+                    <div class="prob-grid">
+                        <div class="prob-card">
+                            <div class="prob-label">P(Burglary)</div>
+                            <div class="prob-value" id="probBurglary">0.1%</div>
+                            <div class="prob-bar"><div class="prob-fill" id="fillBurglary" style="width: 0.1%"></div></div>
+                        </div>
+                        <div class="prob-card">
+                            <div class="prob-label">P(Earthquake)</div>
+                            <div class="prob-value" id="probEarthquake">0.2%</div>
+                            <div class="prob-bar"><div class="prob-fill" id="fillEarthquake" style="width: 0.2%"></div></div>
+                        </div>
+                        <div class="prob-card">
+                            <div class="prob-label">P(Alarm)</div>
+                            <div class="prob-value" id="probAlarm">0.3%</div>
+                            <div class="prob-bar"><div class="prob-fill" id="fillAlarm" style="width: 0.3%"></div></div>
+                        </div>
+                        <div class="prob-card">
+                            <div class="prob-label">P(John Calls)</div>
+                            <div class="prob-value" id="probJohn">5.2%</div>
+                            <div class="prob-bar"><div class="prob-fill" id="fillJohn" style="width: 5.2%"></div></div>
+                        </div>
+                        <div class="prob-card">
+                            <div class="prob-label">P(Mary Calls)</div>
+                            <div class="prob-value" id="probMary">1.2%</div>
+                            <div class="prob-bar"><div class="prob-fill" id="fillMary" style="width: 1.2%"></div></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="insight-box">
+                    <div class="insight-label">🔬 How to Use This Visualization</div>
+                    <div class="insight-content">Try observing different combinations of variables. Notice how observing the Alarm dramatically increases the probability of both Burglary and Earthquake. Then try observing both Alarm and Earthquake—watch how the Burglary probability drops, demonstrating the "explaining away" effect.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="inference" class="content-section">
+            <div class="section-header">
+                <div class="section-number">Section 04</div>
+                <h2 class="section-title">Probabilistic Inference</h2>
+            </div>
+            <div class="content-body">
+                <p>Once a Bayesian Network is constructed, we can perform <strong>probabilistic inference</strong>: computing the probability of a variable or set of variables given observed evidence. This is the fundamental task that makes Bayesian Networks useful for reasoning under uncertainty.</p>
+                
+                <p>Inference allows us to answer queries like "What is the probability of burglary given that the alarm went off?" or "If we also know there was an earthquake, how does that change our belief about burglary?" These are computed using Bayes' theorem applied within the network structure.</p>
+                
+                <div class="steps-container">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Exact Inference: Variable Elimination</div>
+                            <div class="step-description">This algorithm systematically eliminates (sums out) hidden variables one at a time, exploiting the factorization structure to avoid computing the full joint distribution. The order of elimination affects efficiency but not correctness.</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Exact Inference: Belief Propagation</div>
+                            <div class="step-description">Also known as the sum-product algorithm, this message-passing approach is particularly efficient for tree-structured networks. Messages flow between nodes, carrying local probability information that gets combined to compute posterior probabilities.</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Approximate Inference: Sampling Methods</div>
+                            <div class="step-description">For large or densely connected networks where exact inference is intractable, Monte Carlo sampling methods (like Gibbs sampling or likelihood weighting) provide approximate answers with probabilistic guarantees on accuracy.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="formula-container">
+                    <div class="formula-label">Bayes' Theorem — The Foundation of Inference</div>
+                    <div class="formula-display">P(H | E) = P(E | H) × P(H) / P(E)</div>
+                    <p class="formula-explanation">Where H is a hypothesis (hidden variable) and E is evidence (observed data). The posterior probability P(H|E) combines our prior belief P(H) with the likelihood P(E|H) of observing the evidence given the hypothesis.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="explaining-away" class="content-section">
+            <div class="section-header">
+                <div class="section-number">Section 05</div>
+                <h2 class="section-title">The "Explaining Away" Phenomenon</h2>
+            </div>
+            <div class="content-body">
+                <p>One of the most distinctive and counter-intuitive features of Bayesian Networks is the <strong>"explaining away"</strong> effect. This phenomenon occurs when two independent causes both can explain an observed effect—observing one cause reduces our belief in the other cause, even though they were initially independent.</p>
+                
+                <div class="definition-box">
+                    <h4>🎯 Explaining Away Defined</h4>
+                    <p>When two or more independent causes can produce the same effect, observing the effect makes all causes more likely. However, subsequently observing that one cause is present "explains away" the effect, making other causes less necessary and thus less probable. This creates a conditional dependence between causes given their common effect, even though the causes are marginally independent.</p>
+                </div>
+                
+                <p>This phenomenon is crucial in many real-world reasoning tasks. In medical diagnosis, for example, if a patient has a fever (effect), both flu and COVID (causes) become more likely. But if we then test positive for flu, the probability of COVID decreases—the fever is "explained" by the flu.</p>
+                
+                <div class="demo-container">
+                    <div class="demo-header">
+                        <div class="demo-title">Interactive "Explaining Away" Demonstration</div>
+                        <div class="demo-description">Toggle the switches below to observe how evidence about one cause affects our belief in another cause. This demonstrates the fundamental "explaining away" effect in Bayesian reasoning.</div>
+                    </div>
+                    
+                    <div class="demo-layout">
+                        <div class="demo-controls">
+                            <div class="toggle-card" id="toggleAlarmObs">
+                                <div class="toggle-info">
+                                    <span class="toggle-icon">🔔</span>
+                                    <span class="toggle-label">Alarm Triggered</span>
+                                </div>
+                                <div class="toggle-switch"></div>
+                            </div>
+                            <div class="toggle-card" id="toggleEarthquakeObs">
+                                <div class="toggle-info">
+                                    <span class="toggle-icon">🌋</span>
+                                    <span class="toggle-label">Earthquake Observed</span>
+                                </div>
+                                <div class="toggle-switch"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="demo-results">
+                            <div class="result-title" id="scenarioTitle">Prior Probabilities (No Evidence)</div>
+                            <div class="meter-group">
+                                <div class="meter-item">
+                                    <div class="meter-header">
+                                        <span class="meter-name">P(Burglary)</span>
+                                        <span class="meter-value" id="explainBurglary">0.1%</span>
+                                    </div>
+                                    <div class="meter-bar"><div class="meter-fill burglary" id="meterBurglary" style="width: 1%"></div></div>
+                                </div>
+                                <div class="meter-item">
+                                    <div class="meter-header">
+                                        <span class="meter-name">P(Earthquake)</span>
+                                        <span class="meter-value" id="explainEarthquake">0.2%</span>
+                                    </div>
+                                    <div class="meter-bar"><div class="meter-fill earthquake" id="meterEarthquake" style="width: 2%"></div></div>
+                                </div>
+                            </div>
+                            <div class="result-explanation">
+                                <p id="explanationText">Without any evidence, we assume the prior probabilities: burglary is rare (0.1%) and earthquakes are also rare (0.2%). These two events are marginally independent—knowing about one tells us nothing about the other.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="insight-box highlight">
+                    <div class="insight-label">🔑 Critical Observation</div>
+                    <div class="insight-content">Notice how Burglary and Earthquake are initially independent (neither affects the other). But once we observe the Alarm, they become conditionally dependent—learning about one changes our belief about the other. This induced dependency is a hallmark of Bayesian reasoning that distinguishes it from simpler correlation-based models.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="learning" class="content-section">
+            <div class="section-header">
+                <div class="section-number">Section 06</div>
+                <h2 class="section-title">Learning Bayesian Networks</h2>
+            </div>
+            <div class="content-body">
+                <p>Just like other machine learning models, Bayesian Networks can be <strong>learned from data</strong>. This learning process involves two main tasks: determining the structure of the network (which variables influence which) and estimating the parameters (the conditional probability tables).</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h4>Structure Learning</h4>
+                        <p>Identifies the graph connectivity—determining which variables have direct causal or correlational relationships. Approaches include constraint-based methods (using conditional independence tests), score-based methods (optimizing a scoring function like BIC or MDL), and hybrid approaches combining both strategies.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h4>Parameter Learning</h4>
+                        <p>Estimates the conditional probability tables given a fixed graph structure. With complete data, Maximum Likelihood Estimation (MLE) simply counts frequencies. With missing data, the Expectation-Maximization (EM) algorithm iteratively estimates missing values and updates parameters.</p>
+                    </div>
+                </div>
+                
+                <div class="steps-container">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Score-Based Structure Learning</div>
+                            <div class="step-description">Define a scoring function (e.g., BIC, AIC, or Bayesian score) that balances model fit with complexity. Search through the space of possible DAGs using heuristics like hill climbing, tabu search, or genetic algorithms to find high-scoring structures.</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Constraint-Based Structure Learning</div>
+                            <div class="step-description">Use statistical tests (like chi-squared or mutual information) to identify conditional independence relationships in the data. Algorithms like PC or IC construct a DAG consistent with the discovered independence constraints.</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Parameter Estimation with MLE</div>
+                            <div class="step-description">For each node, count the frequency of each value given each parent configuration in the training data. The MLE estimate is simply the relative frequency. Laplace smoothing can be applied to handle zero counts.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="applications" class="content-section">
+            <div class="section-header">
+                <div class="section-number">Section 07</div>
+                <h2 class="section-title">Real-World Applications</h2>
+            </div>
+            <div class="content-body">
+                <p>Bayesian Networks shine in domains where uncertainty and incomplete information are the norm. Their ability to combine prior knowledge with observed data makes them ideal for a wide range of practical applications across medicine, engineering, finance, and beyond.</p>
+                
+                <div class="app-grid">
+                    <div class="app-card">
+                        <div class="app-icon">🏥</div>
+                        <div class="app-name">Medical Diagnosis</div>
+                        <div class="app-desc">Reasoning from symptoms to diseases while handling uncertainty</div>
+                    </div>
+                    <div class="app-card">
+                        <div class="app-icon">🔧</div>
+                        <div class="app-name">Fault Detection</div>
+                        <div class="app-desc">Identifying root causes of system failures from observable symptoms</div>
+                    </div>
+                    <div class="app-card">
+                        <div class="app-icon">💬</div>
+                        <div class="app-name">Natural Language Processing</div>
+                        <div class="app-desc">Part-of-speech tagging, parsing, and semantic analysis</div>
+                    </div>
+                    <div class="app-card">
+                        <div class="app-icon">👁️</div>
+                        <div class="app-name">Computer Vision</div>
+                        <div class="app-desc">Object recognition and scene understanding under uncertainty</div>
+                    </div>
+                    <div class="app-card">
+                        <div class="app-icon">📊</div>
+                        <div class="app-name">Risk Analysis</div>
+                        <div class="app-desc">Quantifying and propagating uncertainty in complex systems</div>
+                    </div>
+                    <div class="app-card">
+                        <div class="app-icon">🧬</div>
+                        <div class="app-name">Bioinformatics</div>
+                        <div class="app-desc">Gene regulatory network inference and protein structure prediction</div>
+                    </div>
+                </div>
+                
+                <div class="insight-box">
+                    <div class="insight-label">🌐 Why Bayesian Networks Excel</div>
+                    <div class="insight-content">Bayesian Networks combine probabilistic rigor with graphical clarity. They provide both quantitative predictions (numerical probability estimates) and interpretable structure (the graph reveals causal and correlational relationships). This dual nature makes them valuable for decision support, where both accuracy and explainability matter.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="takeaways" class="content-section">
+            <div class="section-header">
+                <div class="section-number">Section 08</div>
+                <h2 class="section-title">Key Takeaways</h2>
+            </div>
+            <div class="content-body">
+                <p>Bayesian Networks provide a principled framework for reasoning under uncertainty. Here are the essential concepts to remember from this chapter:</p>
+                
+                <div class="takeaway-list">
+                    <div class="takeaway-item">
+                        <div class="takeaway-check">✓</div>
+                        <div class="takeaway-text"><strong>Compact Representation:</strong> Bayesian Networks efficiently represent complex joint distributions by factorizing them into local conditional probability tables, exploiting the structure of conditional independence.</div>
+                    </div>
+                    <div class="takeaway-item">
+                        <div class="takeaway-check">✓</div>
+                        <div class="takeaway-text"><strong>Principled Inference:</strong> The framework supports exact and approximate algorithms for computing posterior probabilities given observed evidence, enabling rational decision-making under uncertainty.</div>
+                    </div>
+                    <div class="takeaway-item">
+                        <div class="takeaway-check">✓</div>
+                        <div class="takeaway-text"><strong>Explaining Away:</strong> This distinctive phenomenon captures how observing one cause of an effect reduces our belief in alternative causes—a key feature that distinguishes Bayesian reasoning from correlation-based approaches.</div>
+                    </div>
+                    <div class="takeaway-item">
+                        <div class="takeaway-check">✓</div>
+                        <div class="takeaway-text"><strong>Interpretable Structure:</strong> The DAG topology explicitly reveals which variables directly influence others, making the model's assumptions transparent and facilitating communication with domain experts.</div>
+                    </div>
+                    <div class="takeaway-item">
+                        <div class="takeaway-check">✓</div>
+                        <div class="takeaway-text"><strong>Data-Driven Learning:</strong> Both the structure and parameters of Bayesian Networks can be learned from data, allowing models to adapt to observed patterns while incorporating prior domain knowledge.</div>
+                    </div>
+                </div>
+                
+                <div class="references-section">
+                    <h3 class="references-title">References & Further Reading</h3>
+                    <ul class="reference-list">
+                        <li class="reference-item"><strong>Pearl, J. (1988).</strong> Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference. Morgan Kaufmann.</li>
+                        <li class="reference-item"><strong>Koller, D., & Friedman, N. (2009).</strong> Probabilistic Graphical Models: Principles and Techniques. MIT Press.</li>
+                        <li class="reference-item"><strong>Russell, S., & Norvig, P. (2020).</strong> Artificial Intelligence: A Modern Approach (4th ed.). Pearson. Chapter 13: Probabilistic Reasoning.</li>
+                        <li class="reference-item"><strong>Murphy, K. P. (2012).</strong> Machine Learning: A Probabilistic Perspective. MIT Press. Chapters 10, 19-20.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About This Project</h4>
+                <p>This interactive educational material was created by Maju Sumanto as part of the Advanced Data Mining course requirements at Kanazawa University, under the supervision of Professor Nambo.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Course Information</h4>
+                <p><strong>Course:</strong> Advanced Data Mining<br><strong>Chapter:</strong> 6.7 — Bayesian Networks<br><strong>Instructor:</strong> Professor Nambo<br><strong>Institution:</strong> Kanazawa University</p>
+            </div>
+            <div class="footer-section">
+                <h4>Academic Integrity</h4>
+                <p>This material is intended for educational purposes. The interactive visualizations are designed to help students understand complex probabilistic concepts through hands-on exploration.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Maju Sumanto — Kanazawa University | Advanced Data Mining Course</p>
+        </div>
+    </footer>
+
+    <script>
+        // Bayesian Network Visualization
+        const canvas = document.getElementById('bayesianCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+        }
+
+        window.addEventListener('resize', () => { resizeCanvas(); drawNetwork(); });
+
+        const nodes = {
+            burglary: { x: 0.25, y: 0.15, label: 'Burglary', observed: false, color: '#dc2626' },
+            earthquake: { x: 0.75, y: 0.15, label: 'Earthquake', observed: false, color: '#7c3aed' },
+            alarm: { x: 0.5, y: 0.45, label: 'Alarm', observed: false, color: '#2563eb' },
+            johnCalls: { x: 0.25, y: 0.82, label: 'John Calls', observed: false, color: '#059669' },
+            maryCalls: { x: 0.75, y: 0.82, label: 'Mary Calls', observed: false, color: '#d97706' }
+        };
+
+        const edges = [
+            { from: 'burglary', to: 'alarm' },
+            { from: 'earthquake', to: 'alarm' },
+            { from: 'alarm', to: 'johnCalls' },
+            { from: 'alarm', to: 'maryCalls' }
+        ];
+
+        function getCanvasCoords(node) {
+            const rect = canvas.getBoundingClientRect();
+            return { x: node.x * rect.width, y: node.y * rect.height };
+        }
+
+        function drawArrow(fromX, fromY, toX, toY, color, active) {
+            const headLen = 12;
+            const dx = toX - fromX, dy = toY - fromY;
+            const angle = Math.atan2(dy, dx);
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const nodeRadius = 38;
+            const startX = fromX + Math.cos(angle) * nodeRadius;
+            const startY = fromY + Math.sin(angle) * nodeRadius;
+            const endX = fromX + Math.cos(angle) * (dist - nodeRadius - 5);
+            const endY = fromY + Math.sin(angle) * (dist - nodeRadius - 5);
+
+            ctx.strokeStyle = active ? color : '#cbd5e1';
+            ctx.lineWidth = active ? 3 : 2;
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            ctx.fillStyle = active ? color : '#cbd5e1';
+            ctx.beginPath();
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(endX - headLen * Math.cos(angle - Math.PI / 6), endY - headLen * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(endX - headLen * Math.cos(angle + Math.PI / 6), endY - headLen * Math.sin(angle + Math.PI / 6));
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawNode(node) {
+            const coords = getCanvasCoords(node);
+            const radius = 38;
+
+            if (node.observed) {
+                ctx.shadowColor = node.color;
+                ctx.shadowBlur = 20;
+            }
+
+            ctx.beginPath();
+            ctx.arc(coords.x, coords.y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = node.observed ? node.color : '#f8fafc';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = node.observed ? node.color : '#94a3b8';
+            ctx.lineWidth = node.observed ? 3 : 2;
+            ctx.stroke();
+
+            ctx.fillStyle = node.observed ? '#ffffff' : '#1a1f36';
+            ctx.font = '600 13px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(node.label, coords.x, coords.y);
+        }
+
+        function drawNetwork() {
+            const rect = canvas.getBoundingClientRect();
+            ctx.clearRect(0, 0, rect.width, rect.height);
+            edges.forEach(edge => {
+                const from = getCanvasCoords(nodes[edge.from]);
+                const to = getCanvasCoords(nodes[edge.to]);
+                drawArrow(from.x, from.y, to.x, to.y, nodes[edge.from].color, nodes[edge.from].observed);
+            });
+            Object.values(nodes).forEach(node => drawNode(node));
+        }
+
+        function updateProbabilities() {
+            const b = nodes.burglary.observed, e = nodes.earthquake.observed, a = nodes.alarm.observed;
+            let pB, pE, pA, pJ, pM;
+
+            if (a && !b && !e) { pB = 0.374; pE = 0.231; pA = 1.0; pJ = 0.90; pM = 0.70; }
+            else if (a && e && !b) { pB = 0.003; pE = 1.0; pA = 1.0; pJ = 0.90; pM = 0.70; }
+            else if (a && b && !e) { pB = 1.0; pE = 0.002; pA = 1.0; pJ = 0.90; pM = 0.70; }
+            else if (b && !a && !e) { pB = 1.0; pE = 0.002; pA = 0.94; pJ = 0.85; pM = 0.66; }
+            else if (e && !a && !b) { pB = 0.001; pE = 1.0; pA = 0.29; pJ = 0.31; pM = 0.21; }
+            else if (b && e) { pB = 1.0; pE = 1.0; pA = a ? 1.0 : 0.95; pJ = 0.86; pM = 0.67; }
+            else { pB = 0.001; pE = 0.002; pA = 0.003; pJ = 0.052; pM = 0.012; }
+
+            document.getElementById('probBurglary').textContent = (pB * 100).toFixed(1) + '%';
+            document.getElementById('probEarthquake').textContent = (pE * 100).toFixed(1) + '%';
+            document.getElementById('probAlarm').textContent = (pA * 100).toFixed(1) + '%';
+            document.getElementById('probJohn').textContent = (pJ * 100).toFixed(1) + '%';
+            document.getElementById('probMary').textContent = (pM * 100).toFixed(1) + '%';
+            document.getElementById('fillBurglary').style.width = Math.max(pB * 100, 1) + '%';
+            document.getElementById('fillEarthquake').style.width = Math.max(pE * 100, 1) + '%';
+            document.getElementById('fillAlarm').style.width = pA * 100 + '%';
+            document.getElementById('fillJohn').style.width = pJ * 100 + '%';
+            document.getElementById('fillMary').style.width = pM * 100 + '%';
+        }
+
+        document.getElementById('btnReset').addEventListener('click', () => {
+            Object.values(nodes).forEach(n => n.observed = false);
+            document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+            drawNetwork(); updateProbabilities();
+        });
+
+        document.getElementById('btnBurglary').addEventListener('click', function() {
+            nodes.burglary.observed = !nodes.burglary.observed;
+            this.classList.toggle('active');
+            drawNetwork(); updateProbabilities();
+        });
+
+        document.getElementById('btnEarthquake').addEventListener('click', function() {
+            nodes.earthquake.observed = !nodes.earthquake.observed;
+            this.classList.toggle('active');
+            drawNetwork(); updateProbabilities();
+        });
+
+        document.getElementById('btnAlarm').addEventListener('click', function() {
+            nodes.alarm.observed = !nodes.alarm.observed;
+            this.classList.toggle('active');
+            drawNetwork(); updateProbabilities();
+        });
+
+        // Explaining Away Demo
+        let alarmObs = false, earthquakeObs = false;
+
+        function updateExplainingAway() {
+            let pB, pE, title, explanation;
+
+            if (!alarmObs && !earthquakeObs) {
+                pB = 0.001; pE = 0.002;
+                title = "Prior Probabilities (No Evidence)";
+                explanation = "Without any evidence, we assume the prior probabilities: burglary is rare (0.1%) and earthquakes are also rare (0.2%). These two events are marginally independent—knowing about one tells us nothing about the other.";
+            } else if (alarmObs && !earthquakeObs) {
+                pB = 0.374; pE = 0.231;
+                title = "Alarm Triggered — Both Causes Gain Probability";
+                explanation = "The alarm went off! Using Bayes' theorem, both burglary (now 37.4%) and earthquake (now 23.1%) become much more likely as potential explanations for the alarm. Both causes are now 'activated' as hypotheses.";
+            } else if (alarmObs && earthquakeObs) {
+                pB = 0.003; pE = 1.0;
+                title = "Earthquake Confirmed — Burglary 'Explained Away'";
+                explanation = "🎯 Key insight: Once we learn an earthquake occurred, the burglary probability drops dramatically from 37.4% to just 0.3%. The earthquake has 'explained away' the alarm—we no longer need the burglary hypothesis to account for the observed alarm.";
+            } else {
+                pB = 0.001; pE = 1.0;
+                title = "Only Earthquake Observed";
+                explanation = "We know there's an earthquake, but haven't observed the alarm. Burglary remains at its prior probability (0.1%) since without knowing about the alarm, the earthquake tells us nothing about burglary.";
+            }
+
+            document.getElementById('scenarioTitle').textContent = title;
+            document.getElementById('explanationText').textContent = explanation;
+            document.getElementById('explainBurglary').textContent = (pB * 100).toFixed(1) + '%';
+            document.getElementById('explainEarthquake').textContent = (pE * 100).toFixed(1) + '%';
+            document.getElementById('meterBurglary').style.width = Math.max(pB * 100, 1) + '%';
+            document.getElementById('meterEarthquake').style.width = Math.max(pE * 100, 1) + '%';
+        }
+
+        document.getElementById('toggleAlarmObs').addEventListener('click', function() {
+            alarmObs = !alarmObs;
+            this.classList.toggle('active');
+            updateExplainingAway();
+        });
+
+        document.getElementById('toggleEarthquakeObs').addEventListener('click', function() {
+            earthquakeObs = !earthquakeObs;
+            this.classList.toggle('active');
+            updateExplainingAway();
+        });
+
+        // Initialize
+        resizeCanvas(); drawNetwork(); updateProbabilities(); updateExplainingAway();
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
