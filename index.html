@@ -102,6 +102,8 @@
         .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
         .feature-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem; transition: all 0.3s; }
         .feature-card:hover { border-color: var(--accent-primary); box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+        .feature-card.expanded { grid-column: 1 / -1; transform: none; box-shadow: var(--shadow-xl); border-color: var(--accent-primary); background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); }
+        .feature-card.expanded:hover { transform: none; }
         .feature-icon { width: 50px; height: 50px; background: var(--bg-tertiary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.25rem; }
         .feature-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
         .feature-card p { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
@@ -114,10 +116,19 @@
         .feature-card.expanded .expand-icon { transform: rotate(45deg); background: var(--accent-primary); color: white; }
         .card-summary { margin-bottom: 0; }
         .card-expanded { max-height: 0; overflow: hidden; transition: max-height 0.5s ease, padding 0.3s ease; }
-        .feature-card.expanded .card-expanded { max-height: 1500px; }
-        .expanded-content { padding-top: 1.5rem; margin-top: 1.5rem; border-top: 1px solid var(--border-color); }
-        .expanded-content h5 { font-size: 1.1rem; font-weight: 600; color: var(--accent-primary); margin-bottom: 1rem; }
-        .expanded-content > p { color: var(--text-secondary); margin-bottom: 1.25rem; }
+        .feature-card.expanded .card-expanded { max-height: 3000px; }
+        .expanded-content { padding-top: 2rem; margin-top: 1.5rem; border-top: 2px solid var(--border-color); }
+        .expanded-content h5 { font-size: 1.25rem; font-weight: 600; color: var(--accent-primary); margin-bottom: 1rem; }
+        .expanded-content > p { color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 1.05rem; line-height: 1.8; }
+        
+        /* Two-column layout for expanded content */
+        .expanded-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin: 2rem 0; }
+        @media (max-width: 900px) { .expanded-two-col { grid-template-columns: 1fr; } }
+        .expanded-left, .expanded-right { min-width: 0; }
+        
+        /* Section titles in expanded content */
+        .expanded-section-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent-primary); display: flex; align-items: center; gap: 0.5rem; }
+        .expanded-section-title .icon { font-size: 1.1rem; }
         .detail-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
         .detail-item { display: flex; gap: 1rem; align-items: flex-start; }
         .detail-icon { color: var(--accent-primary); font-size: 0.75rem; margin-top: 0.35rem; flex-shrink: 0; }
@@ -201,6 +212,81 @@
         .factor-savings { text-align: center; padding: 1rem; background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-radius: var(--radius-sm); }
         .savings-label { font-size: 0.95rem; color: var(--text-secondary); }
         .savings-value { font-size: 1.5rem; font-weight: 700; color: var(--accent-success); margin-left: 0.5rem; }
+        .savings-icon { font-size: 1.25rem; margin-right: 0.5rem; }
+        
+        /* Additional styles for enriched content */
+        .sub-list { margin: 0.75rem 0 0 1rem; list-style: none; }
+        .sub-list li { position: relative; padding-left: 1rem; margin-bottom: 0.35rem; font-size: 0.9rem; color: var(--text-secondary); }
+        .sub-list li::before { content: '•'; position: absolute; left: 0; color: var(--accent-primary); }
+        .sub-list li strong { color: var(--text-primary); }
+        
+        .term-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+        .term-item { background: white; padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); }
+        .term-name { display: block; font-weight: 600; color: var(--accent-primary); font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .term-def { font-size: 0.85rem; color: var(--text-secondary); }
+        
+        .key-terminology { margin-top: 1.5rem; }
+        
+        .mini-example { margin-top: 0.75rem; padding: 0.75rem; background: #f0f9ff; border-radius: var(--radius-sm); font-size: 0.85rem; border-left: 3px solid var(--accent-primary); }
+        .mini-example strong { color: var(--accent-primary); }
+        
+        .property-cards { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+        .property-card { background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); }
+        .property-name { font-weight: 600; color: var(--accent-secondary); font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .property-card p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; }
+        
+        .insight-mini { background: linear-gradient(135deg, #fefce8, #fef3c7); border: 1px solid #fcd34d; border-radius: var(--radius-md); padding: 1.25rem; }
+        .insight-mini-title { font-weight: 600; color: #b45309; margin-bottom: 0.75rem; font-size: 0.95rem; }
+        .insight-mini p { font-size: 0.9rem; color: var(--text-secondary); margin: 0 0 0.5rem 0; }
+        .insight-mini .sub-list { margin-top: 0.5rem; }
+        
+        .cpt-table-full { overflow-x: auto; }
+        .cpt-table-full table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .cpt-table-full th, .cpt-table-full td { padding: 0.75rem 1rem; text-align: center; border: 1px solid var(--border-color); }
+        .cpt-table-full th { background: var(--bg-tertiary); font-weight: 600; color: var(--text-primary); }
+        .cpt-table-full td { background: white; }
+        .cpt-row-highlight { background: #eff6ff !important; }
+        .cpt-row-highlight td { background: #eff6ff !important; }
+        .table-note { font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.75rem; font-style: italic; }
+        
+        .path-summary-table { overflow-x: auto; margin-top: 0.5rem; }
+        .path-summary-table table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .path-summary-table th, .path-summary-table td { padding: 0.6rem 0.75rem; text-align: center; border: 1px solid var(--border-color); }
+        .path-summary-table th { background: var(--bg-tertiary); font-weight: 600; }
+        .path-summary-table td { background: white; }
+        .status-cell { font-weight: 600; }
+        .status-cell.open { color: var(--accent-success); background: #ecfdf5 !important; }
+        .status-cell.blocked { color: var(--accent-danger); background: #fef2f2 !important; }
+        
+        .formula-highlight { background: var(--bg-dark); border-radius: var(--radius-lg); padding: 2rem; text-align: center; margin: 1.5rem 0; }
+        .formula-title { color: var(--text-light); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+        .formula-main { font-family: 'JetBrains Mono', monospace; font-size: 1.35rem; color: #60a5fa; margin-bottom: 0.75rem; }
+        .formula-desc { color: var(--text-light); font-size: 0.9rem; }
+        
+        .factorization-example { background: white; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; }
+        .fact-example-title { font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; }
+        .fact-equation { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; padding: 1rem; background: var(--bg-tertiary); border-radius: var(--radius-sm); margin-bottom: 1rem; line-height: 1.8; }
+        .fact-term { padding: 0.15rem 0.4rem; border-radius: 4px; }
+        .fact-term.t1 { background: #dbeafe; color: #1d4ed8; }
+        .fact-term.t2 { background: #ede9fe; color: #6d28d9; }
+        .fact-term.t3 { background: #dcfce7; color: #15803d; }
+        .fact-term.t4 { background: #fef3c7; color: #b45309; }
+        .fact-term.t5 { background: #fee2e2; color: #b91c1c; }
+        .fact-breakdown { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .fact-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
+        .fact-size { color: var(--text-tertiary); }
+        .fact-total { padding-top: 1rem; border-top: 1px solid var(--border-color); font-size: 0.9rem; }
+        .fact-total div { margin-bottom: 0.25rem; }
+        .fact-savings-line { color: var(--accent-success); font-weight: 600; margin-top: 0.5rem !important; }
+        
+        .benefit-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+        .benefit-card { background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm); text-align: center; border: 1px solid var(--border-color); }
+        .benefit-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .benefit-name { font-weight: 600; color: var(--text-primary); font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .benefit-card p { font-size: 0.8rem; color: var(--text-secondary); margin: 0; }
+        
+        .factor-n-value { font-weight: 700; color: var(--accent-primary); font-size: 1.1rem; }
+        .factor-unit { font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.25rem; }
         
         .visualization-section { background: var(--bg-tertiary); border-radius: var(--radius-xl); padding: 2.5rem; margin: 3rem 0; border: 1px solid var(--border-color); }
         .viz-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
@@ -414,51 +500,109 @@
                         <p class="card-summary">The backbone of every Bayesian Network. Nodes represent random variables, while directed edges encode direct dependencies.</p>
                         <div class="card-expanded" id="expanded-dag">
                             <div class="expanded-content">
-                                <h5>What is a DAG?</h5>
-                                <p>A <strong>Directed Acyclic Graph</strong> consists of nodes (vertices) connected by directed edges (arrows) with no cycles. In Bayesian Networks:</p>
+                                <h5>Understanding Directed Acyclic Graphs</h5>
+                                <p>A <strong>Directed Acyclic Graph (DAG)</strong> is the structural foundation of every Bayesian Network. It provides a visual and mathematical way to represent how variables in a system influence each other. The term "directed" means edges have a specific direction (arrows), and "acyclic" means you cannot follow the arrows in a circle back to where you started.</p>
                                 
-                                <!-- DAG Visualization -->
-                                <div class="viz-box">
-                                    <div class="viz-title-small">Interactive DAG Visualization</div>
-                                    <div class="viz-subtitle-small">Hover over elements to learn more</div>
-                                    <canvas id="dagCanvas" width="500" height="280"></canvas>
-                                    <div class="viz-legend">
-                                        <div class="legend-item"><span class="legend-dot" style="background: #2563eb;"></span> Node (Random Variable)</div>
-                                        <div class="legend-item"><span class="legend-arrow">→</span> Directed Edge (Dependency)</div>
+                                <div class="expanded-two-col">
+                                    <div class="expanded-left">
+                                        <!-- DAG Visualization -->
+                                        <div class="expanded-section-title"><span class="icon">🎨</span> Interactive Visualization</div>
+                                        <div class="viz-box">
+                                            <div class="viz-subtitle-small">A sample Bayesian Network showing weather relationships</div>
+                                            <canvas id="dagCanvas" width="450" height="300"></canvas>
+                                            <div class="viz-legend">
+                                                <div class="legend-item"><span class="legend-dot" style="background: #d97706;"></span> Root Node (no parents)</div>
+                                                <div class="legend-item"><span class="legend-dot" style="background: #2563eb;"></span> Intermediate Node</div>
+                                                <div class="legend-item"><span class="legend-dot" style="background: #059669;"></span> Leaf Node (no children)</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="key-terminology">
+                                            <div class="expanded-section-title"><span class="icon">📖</span> Key Terminology</div>
+                                            <div class="term-grid">
+                                                <div class="term-item">
+                                                    <span class="term-name">Parent</span>
+                                                    <span class="term-def">A node with an arrow pointing TO another node</span>
+                                                </div>
+                                                <div class="term-item">
+                                                    <span class="term-name">Child</span>
+                                                    <span class="term-def">A node with an arrow pointing FROM another node</span>
+                                                </div>
+                                                <div class="term-item">
+                                                    <span class="term-name">Ancestor</span>
+                                                    <span class="term-def">Parent, grandparent, or any node reachable by going backward</span>
+                                                </div>
+                                                <div class="term-item">
+                                                    <span class="term-name">Descendant</span>
+                                                    <span class="term-def">Child, grandchild, or any node reachable by going forward</span>
+                                                </div>
+                                                <div class="term-item">
+                                                    <span class="term-name">Root</span>
+                                                    <span class="term-def">A node with no parents (entry point)</span>
+                                                </div>
+                                                <div class="term-item">
+                                                    <span class="term-name">Leaf</span>
+                                                    <span class="term-def">A node with no children (terminal node)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="expanded-right">
+                                        <div class="expanded-section-title"><span class="icon">🔍</span> Core Components Explained</div>
+                                        <div class="detail-list">
+                                            <div class="detail-item">
+                                                <span class="detail-icon">◉</span>
+                                                <div>
+                                                    <strong>Nodes (Vertices)</strong>
+                                                    <p>Each node represents a <em>random variable</em>—a quantity that can take different values with certain probabilities. Variables can be:</p>
+                                                    <ul class="sub-list">
+                                                        <li><strong>Observable:</strong> Can be directly measured (e.g., temperature reading)</li>
+                                                        <li><strong>Hidden:</strong> Cannot be directly observed (e.g., underlying disease)</li>
+                                                        <li><strong>Latent:</strong> Theoretical constructs (e.g., intelligence)</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-icon">◉</span>
+                                                <div>
+                                                    <strong>Directed Edges (Arrows)</strong>
+                                                    <p>An arrow from A → B indicates that A <em>directly influences</em> B. This can represent:</p>
+                                                    <ul class="sub-list">
+                                                        <li><strong>Causal relationship:</strong> A causes B</li>
+                                                        <li><strong>Correlational:</strong> A is informative about B</li>
+                                                        <li><strong>Temporal:</strong> A happens before B</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-icon">◉</span>
+                                                <div>
+                                                    <strong>Acyclic Constraint</strong>
+                                                    <p>The graph must have <em>no cycles</em>. This is essential because:</p>
+                                                    <ul class="sub-list">
+                                                        <li>Prevents circular reasoning (A causes B causes A)</li>
+                                                        <li>Ensures a valid probability distribution exists</li>
+                                                        <li>Allows topological ordering for efficient computation</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="example-box" style="margin-top: 1.5rem;">
+                                            <div class="example-title">📝 Real-World Example: Medical Diagnosis</div>
+                                            <p>Consider a medical diagnosis network:</p>
+                                            <p style="margin: 0.75rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--accent-primary);">
+                                                Smoking → Cancer → Coughing<br>
+                                                Smoking → Bronchitis → Coughing
+                                            </p>
+                                            <p>Here, Smoking is a root node (no parents), Cancer and Bronchitis are intermediate nodes, and Coughing is influenced by multiple parents. The structure shows that smoking can lead to coughing through two different pathways.</p>
+                                        </div>
                                     </div>
                                 </div>
                                 
-                                <div class="detail-list">
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>Nodes (Vertices)</strong>
-                                            <p>Each node represents a random variable in your domain. These can be observable (like symptoms), hidden (like diseases), or latent (unobserved factors).</p>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>Directed Edges (Arrows)</strong>
-                                            <p>An arrow from node A to node B means A directly influences B. A is called a "parent" of B, and B is a "child" of A.</p>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>Acyclic Property</strong>
-                                            <p>There are no cycles—you cannot follow the arrows and return to where you started. This ensures causal consistency and prevents infinite loops in reasoning.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="example-box">
-                                    <div class="example-title">📝 Example</div>
-                                    <p>In the Alarm Network: Burglary → Alarm → John Calls. Burglary is a parent of Alarm, and Alarm is a parent of John Calls. There's no way to follow arrows from any node back to itself.</p>
-                                </div>
-                                
-                                <div class="math-note">
-                                    <strong>Formal Definition:</strong> A DAG G = (V, E) where V is a set of nodes and E is a set of directed edges, such that there exists no sequence of edges that forms a cycle.
+                                <div class="math-note" style="margin-top: 1.5rem;">
+                                    <strong>Formal Definition:</strong> A DAG is a pair G = (V, E) where V is a finite set of vertices (nodes), E ⊆ V × V is a set of directed edges, and there exists no sequence of edges (v₁, v₂), (v₂, v₃), ..., (vₙ₋₁, vₙ) where v₁ = vₙ (no cycles).
                                 </div>
                             </div>
                         </div>
@@ -474,81 +618,113 @@
                         <p class="card-summary">Each node stores a CPT specifying its probability distribution given all possible parent configurations.</p>
                         <div class="card-expanded" id="expanded-cpt">
                             <div class="expanded-content">
-                                <h5>What is a CPT?</h5>
-                                <p>A <strong>Conditional Probability Table</strong> quantifies how a node's probability depends on its parents. It's the "knowledge" stored at each node.</p>
+                                <h5>Understanding Conditional Probability Tables</h5>
+                                <p>A <strong>Conditional Probability Table (CPT)</strong> is the quantitative component of a Bayesian Network. While the DAG structure tells us <em>which</em> variables influence others, the CPT tells us <em>how much</em> and <em>in what way</em>. Each node in the network has an associated CPT that completely specifies its probability distribution given every possible combination of its parent values.</p>
                                 
-                                <!-- CPT Visualization -->
-                                <div class="viz-box">
-                                    <div class="viz-title-small">Interactive CPT Explorer</div>
-                                    <div class="viz-subtitle-small">Click on parent combinations to see probabilities</div>
-                                    <div class="cpt-interactive">
-                                        <div class="cpt-controls">
-                                            <div class="cpt-toggle-group">
-                                                <label>Burglary:</label>
-                                                <button class="cpt-toggle active" id="cptBurgTrue" onclick="updateCPTViz(event, 'burg', true)">True</button>
-                                                <button class="cpt-toggle" id="cptBurgFalse" onclick="updateCPTViz(event, 'burg', false)">False</button>
-                                            </div>
-                                            <div class="cpt-toggle-group">
-                                                <label>Earthquake:</label>
-                                                <button class="cpt-toggle active" id="cptEarthTrue" onclick="updateCPTViz(event, 'earth', true)">True</button>
-                                                <button class="cpt-toggle" id="cptEarthFalse" onclick="updateCPTViz(event, 'earth', false)">False</button>
+                                <div class="expanded-two-col">
+                                    <div class="expanded-left">
+                                        <!-- CPT Visualization -->
+                                        <div class="expanded-section-title"><span class="icon">🎮</span> Interactive CPT Explorer</div>
+                                        <div class="viz-box">
+                                            <div class="viz-subtitle-small">Select parent values to see how they affect P(Alarm)</div>
+                                            <div class="cpt-interactive">
+                                                <div class="cpt-controls">
+                                                    <div class="cpt-toggle-group">
+                                                        <label>Burglary:</label>
+                                                        <button class="cpt-toggle active" id="cptBurgTrue" onclick="updateCPTViz(event, 'burg', true)">True</button>
+                                                        <button class="cpt-toggle" id="cptBurgFalse" onclick="updateCPTViz(event, 'burg', false)">False</button>
+                                                    </div>
+                                                    <div class="cpt-toggle-group">
+                                                        <label>Earthquake:</label>
+                                                        <button class="cpt-toggle active" id="cptEarthTrue" onclick="updateCPTViz(event, 'earth', true)">True</button>
+                                                        <button class="cpt-toggle" id="cptEarthFalse" onclick="updateCPTViz(event, 'earth', false)">False</button>
+                                                    </div>
+                                                </div>
+                                                <div class="cpt-result">
+                                                    <div class="cpt-result-label">P(Alarm = True | Burglary, Earthquake)</div>
+                                                    <div class="cpt-result-value" id="cptResultValue">95%</div>
+                                                    <div class="cpt-bar-container">
+                                                        <div class="cpt-bar-fill" id="cptBarFill" style="width: 95%"></div>
+                                                    </div>
+                                                    <div class="cpt-result-explanation" id="cptExplanation">With both burglary AND earthquake, the alarm is almost certain to trigger (95%).</div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="cpt-result">
-                                            <div class="cpt-result-label">P(Alarm = True | Burglary, Earthquake)</div>
-                                            <div class="cpt-result-value" id="cptResultValue">95%</div>
-                                            <div class="cpt-bar-container">
-                                                <div class="cpt-bar-fill" id="cptBarFill" style="width: 95%"></div>
+                                        
+                                        <div class="expanded-section-title" style="margin-top: 1.5rem;"><span class="icon">📋</span> Complete Alarm CPT</div>
+                                        <div class="cpt-table-full">
+                                            <table>
+                                                <thead>
+                                                    <tr><th>Burglary</th><th>Earthquake</th><th>P(Alarm=T)</th><th>P(Alarm=F)</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="cpt-row-highlight"><td>True</td><td>True</td><td><strong>0.95</strong></td><td>0.05</td></tr>
+                                                    <tr><td>True</td><td>False</td><td><strong>0.94</strong></td><td>0.06</td></tr>
+                                                    <tr><td>False</td><td>True</td><td><strong>0.29</strong></td><td>0.71</td></tr>
+                                                    <tr><td>False</td><td>False</td><td><strong>0.001</strong></td><td>0.999</td></tr>
+                                                </tbody>
+                                            </table>
+                                            <p class="table-note">Note: Each row sums to 1.0 (probabilities must be complete)</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="expanded-right">
+                                        <div class="expanded-section-title"><span class="icon">🔍</span> Types of CPTs</div>
+                                        <div class="detail-list">
+                                            <div class="detail-item">
+                                                <span class="detail-icon">◉</span>
+                                                <div>
+                                                    <strong>Prior Probability (Root Nodes)</strong>
+                                                    <p>Nodes without parents store unconditional probabilities P(X). These represent our initial beliefs before observing any evidence.</p>
+                                                    <div class="mini-example">
+                                                        <strong>Example:</strong> P(Burglary = True) = 0.001<br>
+                                                        "There's a 0.1% chance of burglary on any given day"
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="cpt-result-explanation" id="cptExplanation">With both burglary AND earthquake, the alarm is almost certain to trigger (95%).</div>
+                                            <div class="detail-item">
+                                                <span class="detail-icon">◉</span>
+                                                <div>
+                                                    <strong>Conditional Probability (Child Nodes)</strong>
+                                                    <p>Nodes with parents store P(X | Parents). The table must have one entry for each combination of parent values.</p>
+                                                    <div class="mini-example">
+                                                        <strong>Example:</strong> P(Alarm | Burglary, Earthquake)<br>
+                                                        With 2 binary parents → 2² = 4 rows needed
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="expanded-section-title" style="margin-top: 1.5rem;"><span class="icon">⚠️</span> Important Properties</div>
+                                        <div class="property-cards">
+                                            <div class="property-card">
+                                                <div class="property-name">Completeness</div>
+                                                <p>Every possible parent combination must have a probability specified</p>
+                                            </div>
+                                            <div class="property-card">
+                                                <div class="property-name">Normalization</div>
+                                                <p>For each parent configuration, probabilities must sum to 1</p>
+                                            </div>
+                                            <div class="property-card">
+                                                <div class="property-name">Size Complexity</div>
+                                                <p>A node with k binary parents needs 2ᵏ probability values</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="insight-mini" style="margin-top: 1.5rem;">
+                                            <div class="insight-mini-title">💡 Why This Matters</div>
+                                            <p>CPTs are where domain knowledge enters the model. They can be:</p>
+                                            <ul class="sub-list">
+                                                <li><strong>Expert-specified:</strong> Based on domain expertise</li>
+                                                <li><strong>Data-driven:</strong> Learned from training data</li>
+                                                <li><strong>Hybrid:</strong> Combining both approaches</li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="detail-list">
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>Root Nodes (No Parents)</strong>
-                                            <p>Nodes without parents store their prior probability P(X). For example, P(Burglary) = 0.001 means there's a 0.1% chance of burglary on any given day.</p>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>Child Nodes (With Parents)</strong>
-                                            <p>Nodes with parents store P(X | Parents). The table has one row for each combination of parent values, specifying the probability of X for that configuration.</p>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>Table Size</strong>
-                                            <p>For a binary node with k binary parents, the CPT has 2ᵏ rows. This exponential growth motivates keeping networks sparse (few parents per node).</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="example-box">
-                                    <div class="example-title">📝 Example: Alarm CPT</div>
-                                    <div class="cpt-table">
-                                        <table>
-                                            <thead>
-                                                <tr><th>Burglary</th><th>Earthquake</th><th>P(Alarm=T)</th></tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr><td>True</td><td>True</td><td>0.95</td></tr>
-                                                <tr><td>True</td><td>False</td><td>0.94</td></tr>
-                                                <tr><td>False</td><td>True</td><td>0.29</td></tr>
-                                                <tr><td>False</td><td>False</td><td>0.001</td></tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <p style="margin-top: 0.75rem; font-size: 0.9rem;">The alarm is very likely (95%) if both burglary and earthquake occur, but very unlikely (0.1%) if neither occurs.</p>
-                                </div>
-                                
-                                <div class="math-note">
-                                    <strong>Completeness:</strong> Each CPT must specify probabilities for ALL combinations of parent values, and probabilities must sum to 1 for each parent configuration.
+                                <div class="math-note" style="margin-top: 1.5rem;">
+                                    <strong>Formal Requirement:</strong> For each node Xᵢ with parents Pa(Xᵢ), the CPT must specify P(Xᵢ = x | Pa(Xᵢ) = pa) for all values x ∈ Dom(Xᵢ) and all configurations pa ∈ Dom(Pa(Xᵢ)), such that Σₓ P(Xᵢ = x | Pa(Xᵢ) = pa) = 1 for each pa.
                                 </div>
                             </div>
                         </div>
@@ -564,65 +740,113 @@
                         <p class="card-summary">The graph structure encodes which variables are conditionally independent given others.</p>
                         <div class="card-expanded" id="expanded-ci">
                             <div class="expanded-content">
-                                <h5>What is Conditional Independence?</h5>
-                                <p>Two variables X and Y are <strong>conditionally independent</strong> given Z (written X ⊥ Y | Z) if knowing Y provides no additional information about X once Z is known.</p>
+                                <h5>Understanding Conditional Independence & D-Separation</h5>
+                                <p><strong>Conditional Independence</strong> is the key concept that makes Bayesian Networks computationally tractable. Two variables X and Y are conditionally independent given Z (written X ⊥ Y | Z) if learning about Y provides no additional information about X once we already know Z. The graph structure of a Bayesian Network explicitly encodes these independence relationships through a concept called <strong>d-separation</strong>.</p>
                                 
-                                <!-- D-Separation Visualization -->
-                                <div class="viz-box">
-                                    <div class="viz-title-small">D-Separation Path Types</div>
-                                    <div class="viz-subtitle-small">Click each path type to see how information flows</div>
-                                    <div class="dsep-container">
-                                        <div class="dsep-tabs">
-                                            <button class="dsep-tab active" onclick="showDsepPath(event, 'chain')">Chain (A→B→C)</button>
-                                            <button class="dsep-tab" onclick="showDsepPath(event, 'fork')">Fork (A←B→C)</button>
-                                            <button class="dsep-tab" onclick="showDsepPath(event, 'collider')">Collider (A→B←C)</button>
-                                        </div>
-                                        <div class="dsep-content">
-                                            <canvas id="dsepCanvas" width="400" height="150"></canvas>
-                                            <div class="dsep-explanation" id="dsepExplanation">
-                                                <div class="dsep-status" id="dsepStatus">Path is <span class="status-open">OPEN</span></div>
-                                                <p id="dsepText">In a chain A→B→C, information flows from A to C through B. If B is observed (shaded), the path is BLOCKED—A and C become independent given B.</p>
+                                <div class="expanded-two-col">
+                                    <div class="expanded-left">
+                                        <!-- D-Separation Visualization -->
+                                        <div class="expanded-section-title"><span class="icon">🎮</span> D-Separation Simulator</div>
+                                        <div class="viz-box">
+                                            <div class="viz-subtitle-small">Explore how information flows through different path structures</div>
+                                            <div class="dsep-container">
+                                                <div class="dsep-tabs">
+                                                    <button class="dsep-tab active" onclick="showDsepPath(event, 'chain')">Chain (A→B→C)</button>
+                                                    <button class="dsep-tab" onclick="showDsepPath(event, 'fork')">Fork (A←B→C)</button>
+                                                    <button class="dsep-tab" onclick="showDsepPath(event, 'collider')">Collider (A→B←C)</button>
+                                                </div>
+                                                <div class="dsep-content">
+                                                    <canvas id="dsepCanvas" width="400" height="160"></canvas>
+                                                    <div class="dsep-explanation" id="dsepExplanation">
+                                                        <div class="dsep-status" id="dsepStatus">Path is <span class="status-open">OPEN</span></div>
+                                                        <p id="dsepText">In a chain A→B→C, information flows from A to C through B. If B is observed (shaded), the path is BLOCKED—A and C become independent given B.</p>
+                                                    </div>
+                                                    <div class="dsep-toggle-container">
+                                                        <label>Observe middle node (B):</label>
+                                                        <button class="dsep-observe-btn" id="dsepObserveBtn" onclick="toggleDsepObserve(event)">Not Observed</button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="dsep-toggle-container">
-                                                <label>Observe middle node (B):</label>
-                                                <button class="dsep-observe-btn" id="dsepObserveBtn" onclick="toggleDsepObserve(event)">Not Observed</button>
+                                        </div>
+                                        
+                                        <div class="expanded-section-title" style="margin-top: 1.5rem;"><span class="icon">📊</span> Path Type Summary</div>
+                                        <div class="path-summary-table">
+                                            <table>
+                                                <thead>
+                                                    <tr><th>Path Type</th><th>Structure</th><th>B Not Observed</th><th>B Observed</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><strong>Chain</strong></td>
+                                                        <td>A → B → C</td>
+                                                        <td class="status-cell open">Open</td>
+                                                        <td class="status-cell blocked">Blocked</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Fork</strong></td>
+                                                        <td>A ← B → C</td>
+                                                        <td class="status-cell open">Open</td>
+                                                        <td class="status-cell blocked">Blocked</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Collider</strong></td>
+                                                        <td>A → B ← C</td>
+                                                        <td class="status-cell blocked">Blocked</td>
+                                                        <td class="status-cell open">Open</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <p class="table-note">⚠️ Colliders work OPPOSITE to chains and forks!</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="expanded-right">
+                                        <div class="expanded-section-title"><span class="icon">🔍</span> The Three Fundamental Structures</div>
+                                        <div class="detail-list">
+                                            <div class="detail-item">
+                                                <span class="detail-icon" style="color: #2563eb;">◉</span>
+                                                <div>
+                                                    <strong>Chain (Causal/Evidential)</strong>
+                                                    <p>A → B → C represents sequential influence. Information flows from A to C through B.</p>
+                                                    <div class="mini-example">
+                                                        <strong>Example:</strong> Fire → Smoke → Alarm<br>
+                                                        Knowing about smoke blocks the connection between fire and alarm (smoke "screens off" fire from alarm)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-icon" style="color: #7c3aed;">◉</span>
+                                                <div>
+                                                    <strong>Fork (Common Cause)</strong>
+                                                    <p>A ← B → C means B is a common cause of both A and C.</p>
+                                                    <div class="mini-example">
+                                                        <strong>Example:</strong> Wet Grass ← Rain → Traffic Jam<br>
+                                                        Wet grass and traffic seem correlated, but once we know it rained, they become independent
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-icon" style="color: #dc2626;">◉</span>
+                                                <div>
+                                                    <strong>Collider (Common Effect) — Special!</strong>
+                                                    <p>A → B ← C means B is a common effect of both A and C. This structure behaves <em>opposite</em> to the others!</p>
+                                                    <div class="mini-example">
+                                                        <strong>Example:</strong> Talent → Admission ← Hard Work<br>
+                                                        Talent and hard work are independent. But if we observe someone was admitted, learning they're not talented makes us believe they must have worked hard. This is "explaining away"!
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="detail-list">
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>Local Markov Property</strong>
-                                            <p>Each node is conditionally independent of its non-descendants given its parents. This is the fundamental independence assumption in Bayesian Networks.</p>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>D-Separation</strong>
-                                            <p>A graphical criterion for determining conditional independence. Two nodes are d-separated (independent) given evidence if all paths between them are "blocked."</p>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>Three Path Types</strong>
-                                            <p><em>Chain:</em> A → B → C (B blocks)<br><em>Fork:</em> A ← B → C (B blocks)<br><em>Collider:</em> A → B ← C (B opens when observed!)</p>
+                                        
+                                        <div class="insight-mini" style="margin-top: 1.5rem;">
+                                            <div class="insight-mini-title">🎯 The Explaining Away Effect</div>
+                                            <p>When we observe a collider node, its previously independent parents become <em>dependent</em>. Observing one parent "explains away" the observed effect, reducing our belief in the other parent. This counter-intuitive phenomenon is a hallmark of Bayesian reasoning!</p>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="example-box">
-                                    <div class="example-title">📝 Example: D-Separation in Alarm Network</div>
-                                    <p><strong>Question:</strong> Are Burglary and Earthquake independent given Alarm?</p>
-                                    <p><strong>Answer:</strong> No! Alarm is a collider (B → Alarm ← E). Observing Alarm <em>opens</em> the path, making Burglary and Earthquake conditionally <em>dependent</em>. This is the "explaining away" effect!</p>
-                                </div>
-                                
-                                <div class="math-note">
-                                    <strong>Formal Definition:</strong> X ⊥ Y | Z iff P(X, Y | Z) = P(X | Z) × P(Y | Z), or equivalently, P(X | Y, Z) = P(X | Z).
+                                <div class="math-note" style="margin-top: 1.5rem;">
+                                    <strong>D-Separation Rule:</strong> Two nodes X and Y are d-separated (conditionally independent) given a set Z if and only if every undirected path between X and Y is "blocked" by Z. A path is blocked if it contains: (1) a chain or fork where the middle node is in Z, OR (2) a collider where the middle node and all its descendants are NOT in Z.
                                 </div>
                             </div>
                         </div>
@@ -638,77 +862,134 @@
                         <p class="card-summary">The joint distribution factorizes into a product of local conditional distributions.</p>
                         <div class="card-expanded" id="expanded-fact">
                             <div class="expanded-content">
-                                <h5>What is Factorization?</h5>
-                                <p>The <strong>factorization property</strong> allows us to express the full joint probability distribution as a product of simpler, local terms—one for each node in the network.</p>
+                                <h5>The Power of Factorization</h5>
+                                <p>The <strong>factorization property</strong> is what makes Bayesian Networks practical for real-world problems. It allows us to express the full joint probability distribution over all variables as a simple product of local conditional probability tables—one for each node. This transforms an exponentially complex problem into a manageable one, enabling efficient storage, computation, and inference.</p>
                                 
-                                <!-- Factorization Visualization -->
-                                <div class="viz-box">
-                                    <div class="viz-title-small">Parameter Savings Calculator</div>
-                                    <div class="viz-subtitle-small">Adjust the number of variables to see the savings</div>
-                                    <div class="factor-calculator">
-                                        <div class="factor-slider-container">
-                                            <label>Number of Variables (n): <span id="factorN">5</span></label>
-                                            <input type="range" id="factorSlider" min="3" max="12" value="5" oninput="updateFactorViz(event)">
-                                        </div>
-                                        <div class="factor-comparison">
-                                            <div class="factor-box factor-without">
-                                                <div class="factor-label">Without Factorization</div>
-                                                <div class="factor-formula">2ⁿ - 1 parameters</div>
-                                                <div class="factor-value" id="factorWithout">31</div>
-                                                <div class="factor-bar-container">
-                                                    <div class="factor-bar" id="factorBarWithout" style="width: 100%"></div>
+                                <div class="formula-highlight">
+                                    <div class="formula-title">The Chain Rule of Bayesian Networks</div>
+                                    <div class="formula-main">P(X₁, X₂, ..., Xₙ) = ∏ᵢ P(Xᵢ | Parents(Xᵢ))</div>
+                                    <div class="formula-desc">The joint probability equals the product of each variable's conditional probability given its parents</div>
+                                </div>
+                                
+                                <div class="expanded-two-col">
+                                    <div class="expanded-left">
+                                        <!-- Factorization Visualization -->
+                                        <div class="expanded-section-title"><span class="icon">🧮</span> Parameter Savings Calculator</div>
+                                        <div class="viz-box">
+                                            <div class="viz-subtitle-small">See how factorization reduces complexity exponentially</div>
+                                            <div class="factor-calculator">
+                                                <div class="factor-slider-container">
+                                                    <label>Number of Variables (n): <span id="factorN" class="factor-n-value">5</span></label>
+                                                    <input type="range" id="factorSlider" min="3" max="15" value="5" oninput="updateFactorViz(event)">
+                                                </div>
+                                                <div class="factor-comparison">
+                                                    <div class="factor-box factor-without">
+                                                        <div class="factor-label">❌ Without Factorization</div>
+                                                        <div class="factor-formula">Full joint table: 2ⁿ - 1</div>
+                                                        <div class="factor-value" id="factorWithout">31</div>
+                                                        <div class="factor-unit">parameters</div>
+                                                        <div class="factor-bar-container">
+                                                            <div class="factor-bar" id="factorBarWithout" style="width: 100%"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="factor-box factor-with">
+                                                        <div class="factor-label">✅ With Factorization</div>
+                                                        <div class="factor-formula">Sparse DAG: ~n × 2ᵏ</div>
+                                                        <div class="factor-value" id="factorWith">10</div>
+                                                        <div class="factor-unit">parameters</div>
+                                                        <div class="factor-bar-container">
+                                                            <div class="factor-bar" id="factorBarWith" style="width: 32%"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="factor-savings">
+                                                    <span class="savings-icon">💾</span>
+                                                    <span class="savings-label">Space Savings:</span>
+                                                    <span class="savings-value" id="factorSavings">68%</span>
                                                 </div>
                                             </div>
-                                            <div class="factor-box factor-with">
-                                                <div class="factor-label">With Factorization</div>
-                                                <div class="factor-formula">~n × 2² parameters</div>
-                                                <div class="factor-value" id="factorWith">10</div>
-                                                <div class="factor-bar-container">
-                                                    <div class="factor-bar" id="factorBarWith" style="width: 32%"></div>
+                                        </div>
+                                        
+                                        <div class="expanded-section-title" style="margin-top: 1.5rem;"><span class="icon">📝</span> Worked Example</div>
+                                        <div class="factorization-example">
+                                            <div class="fact-example-title">Alarm Network Factorization</div>
+                                            <div class="fact-equation">
+                                                P(B, E, A, J, M) = <span class="fact-term t1">P(B)</span> × <span class="fact-term t2">P(E)</span> × <span class="fact-term t3">P(A|B,E)</span> × <span class="fact-term t4">P(J|A)</span> × <span class="fact-term t5">P(M|A)</span>
+                                            </div>
+                                            <div class="fact-breakdown">
+                                                <div class="fact-item"><span class="fact-term t1">P(B)</span> <span class="fact-size">1 param</span></div>
+                                                <div class="fact-item"><span class="fact-term t2">P(E)</span> <span class="fact-size">1 param</span></div>
+                                                <div class="fact-item"><span class="fact-term t3">P(A|B,E)</span> <span class="fact-size">4 params</span></div>
+                                                <div class="fact-item"><span class="fact-term t4">P(J|A)</span> <span class="fact-size">2 params</span></div>
+                                                <div class="fact-item"><span class="fact-term t5">P(M|A)</span> <span class="fact-size">2 params</span></div>
+                                            </div>
+                                            <div class="fact-total">
+                                                <div>Without: <strong>2⁵ - 1 = 31</strong> parameters</div>
+                                                <div>With: <strong>1 + 1 + 4 + 2 + 2 = 10</strong> parameters</div>
+                                                <div class="fact-savings-line">→ 68% reduction!</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="expanded-right">
+                                        <div class="expanded-section-title"><span class="icon">🔍</span> Why Factorization Works</div>
+                                        <div class="detail-list">
+                                            <div class="detail-item">
+                                                <span class="detail-icon">◉</span>
+                                                <div>
+                                                    <strong>Exploits Conditional Independence</strong>
+                                                    <p>Each variable only depends on its parents, not all other variables. This sparsity is what enables the decomposition.</p>
+                                                </div>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-icon">◉</span>
+                                                <div>
+                                                    <strong>Local Computations</strong>
+                                                    <p>Instead of one massive table, we work with many small tables. Each CPT only involves a node and its parents.</p>
+                                                </div>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-icon">◉</span>
+                                                <div>
+                                                    <strong>Linear vs. Exponential Growth</strong>
+                                                    <p>Adding a new variable adds one new CPT (linear), not doubling the joint table (exponential).</p>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="factor-savings">
-                                            <span class="savings-label">Space Savings:</span>
-                                            <span class="savings-value" id="factorSavings">68%</span>
+                                        
+                                        <div class="expanded-section-title" style="margin-top: 1.5rem;"><span class="icon">⚡</span> Computational Benefits</div>
+                                        <div class="benefit-cards">
+                                            <div class="benefit-card">
+                                                <div class="benefit-icon">💾</div>
+                                                <div class="benefit-name">Storage</div>
+                                                <p>Store n small tables instead of one huge table</p>
+                                            </div>
+                                            <div class="benefit-card">
+                                                <div class="benefit-icon">🚀</div>
+                                                <div class="benefit-name">Inference</div>
+                                                <p>Algorithms exploit structure for efficiency</p>
+                                            </div>
+                                            <div class="benefit-card">
+                                                <div class="benefit-icon">📚</div>
+                                                <div class="benefit-name">Learning</div>
+                                                <p>Parameters can be learned independently</p>
+                                            </div>
+                                            <div class="benefit-card">
+                                                <div class="benefit-icon">🔧</div>
+                                                <div class="benefit-name">Modularity</div>
+                                                <p>Easy to update individual components</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="insight-mini" style="margin-top: 1.5rem;">
+                                            <div class="insight-mini-title">⚠️ When Does It Work?</div>
+                                            <p>Factorization is only valid when the conditional independence assumptions encoded in the DAG actually hold in the real data. If the structure is wrong, the factorized model will give incorrect probabilities!</p>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="detail-list">
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>The Chain Rule</strong>
-                                            <p>P(X₁, X₂, ..., Xₙ) = ∏ᵢ P(Xᵢ | Parents(Xᵢ)). This is THE fundamental equation of Bayesian Networks.</p>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>Space Savings</strong>
-                                            <p>Full joint over n binary variables: 2ⁿ - 1 parameters. With sparse DAG (≤k parents): O(n × 2ᵏ) parameters. Exponential vs. linear in n!</p>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-icon">◉</span>
-                                        <div>
-                                            <strong>Computational Benefits</strong>
-                                            <p>Inference algorithms exploit this factorization to avoid computing the full joint, working with smaller local factors instead.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="example-box">
-                                    <div class="example-title">📝 Example: Alarm Network Factorization</div>
-                                    <p>P(B, E, A, J, M) = P(B) × P(E) × P(A|B,E) × P(J|A) × P(M|A)</p>
-                                    <p style="margin-top: 0.5rem;"><strong>Without factorization:</strong> 2⁵ - 1 = 31 parameters</p>
-                                    <p><strong>With factorization:</strong> 1 + 1 + 4 + 2 + 2 = 10 parameters</p>
-                                    <p style="margin-top: 0.5rem; color: var(--accent-success); font-weight: 600;">→ 68% reduction in parameters!</p>
-                                </div>
-                                
-                                <div class="math-note">
-                                    <strong>Key Insight:</strong> The factorization is valid IF AND ONLY IF the conditional independence assumptions encoded in the DAG hold for the true distribution.
+                                <div class="math-note" style="margin-top: 1.5rem;">
+                                    <strong>Complexity Analysis:</strong> For n binary variables with maximum k parents per node, the full joint requires O(2ⁿ) parameters, while the factorized representation requires only O(n · 2ᵏ) parameters. When k is small and fixed (sparse networks), this is exponentially better!
                                 </div>
                             </div>
                         </div>
@@ -1089,38 +1370,46 @@
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             
+            // Weather-related Bayesian Network
             const nodes = [
-                { x: 100, y: 60, label: 'Rain', color: '#2563eb' },
-                { x: 250, y: 60, label: 'Sprinkler', color: '#7c3aed' },
-                { x: 175, y: 160, label: 'Wet Grass', color: '#059669' },
-                { x: 400, y: 60, label: 'Season', color: '#d97706' },
-                { x: 400, y: 160, label: 'Slippery', color: '#dc2626' }
+                { x: 225, y: 50, label: 'Season', color: '#d97706', type: 'root' },
+                { x: 100, y: 140, label: 'Rain', color: '#2563eb', type: 'intermediate' },
+                { x: 350, y: 140, label: 'Sprinkler', color: '#7c3aed', type: 'intermediate' },
+                { x: 225, y: 230, label: 'Wet Grass', color: '#059669', type: 'leaf' },
             ];
             
             const edges = [
-                { from: 0, to: 2 },
-                { from: 1, to: 2 },
-                { from: 3, to: 0 },
-                { from: 3, to: 1 },
-                { from: 2, to: 4 }
+                { from: 0, to: 1 },  // Season -> Rain
+                { from: 0, to: 2 },  // Season -> Sprinkler
+                { from: 1, to: 3 },  // Rain -> Wet Grass
+                { from: 2, to: 3 },  // Sprinkler -> Wet Grass
             ];
             
             function draw() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                // Draw edges
+                // Draw edges first
                 edges.forEach(edge => {
                     const from = nodes[edge.from];
                     const to = nodes[edge.to];
-                    drawArrowDAG(ctx, from.x, from.y, to.x, to.y, from.color);
+                    drawArrowDAG(ctx, from.x, from.y, to.x, to.y, '#94a3b8');
                 });
                 
                 // Draw nodes
                 nodes.forEach(node => {
+                    // Shadow
                     ctx.beginPath();
-                    ctx.arc(node.x, node.y, 30, 0, Math.PI * 2);
+                    ctx.arc(node.x + 2, node.y + 2, 32, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0,0,0,0.1)';
+                    ctx.fill();
+                    
+                    // Node circle
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, 32, 0, Math.PI * 2);
                     ctx.fillStyle = node.color;
                     ctx.fill();
+                    
+                    // Label
                     ctx.fillStyle = 'white';
                     ctx.font = '600 11px Inter, sans-serif';
                     ctx.textAlign = 'center';
@@ -1128,13 +1417,13 @@
                     ctx.fillText(node.label, node.x, node.y);
                 });
                 
-                // Labels
+                // Draw type labels
+                ctx.font = '500 10px Inter, sans-serif';
                 ctx.fillStyle = '#64748b';
-                ctx.font = '500 11px Inter, sans-serif';
-                ctx.fillText('Parent', 100, 20);
-                ctx.fillText('Parent', 250, 20);
-                ctx.fillText('Child', 175, 210);
-                ctx.fillText('Root', 400, 20);
+                ctx.fillText('Root Node', 225, 15);
+                ctx.fillText('(no parents)', 225, 26);
+                ctx.fillText('Leaf Node', 225, 275);
+                ctx.fillText('(no children)', 225, 286);
             }
             
             function drawArrowDAG(ctx, fromX, fromY, toX, toY, color) {
@@ -1142,10 +1431,10 @@
                 const dx = toX - fromX, dy = toY - fromY;
                 const angle = Math.atan2(dy, dx);
                 const dist = Math.sqrt(dx * dx + dy * dy);
-                const startX = fromX + Math.cos(angle) * 32;
-                const startY = fromY + Math.sin(angle) * 32;
-                const endX = fromX + Math.cos(angle) * (dist - 32);
-                const endY = fromY + Math.sin(angle) * (dist - 32);
+                const startX = fromX + Math.cos(angle) * 34;
+                const startY = fromY + Math.sin(angle) * 34;
+                const endX = fromX + Math.cos(angle) * (dist - 34);
+                const endY = fromY + Math.sin(angle) * (dist - 34);
                 
                 ctx.strokeStyle = color;
                 ctx.lineWidth = 2;
